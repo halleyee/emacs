@@ -7,7 +7,7 @@
 
 (setq package-archives '(("gnu"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
                          ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
-			 ("marmalade" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/marmalade/")))
+                         ("marmalade" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/marmalade/")))
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -21,7 +21,7 @@
  '(inhibit-startup-screen t)
  '(initial-scratch-message nil)
  '(make-backup-files nil)
- '(package-selected-packages (quote (magit ag fzf ggtags)))
+ '(package-selected-packages (quote (markdown-mode helm magit ag fzf ggtags)))
  '(require-final-newline t)
  '(show-paren-mode t))
 (custom-set-faces
@@ -29,6 +29,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(default ((t (:family "JetBrains Mono" :foundry "JB  " :slant normal :weight normal :height 98 :width normal))))
  '(region ((t (:background "LightGoldenrod2" :distant-foreground "gtk_selection_fg_color")))))
 (global-set-key "\C-cf" 'find-file-at-point)
 (global-set-key "\C-ck" 'kill-this-buffer)
@@ -45,7 +46,8 @@
           '(lambda ()
              (ggtags-mode t)
              (hs-minor-mode)
-             (c-set-style "java")))
+             (c-set-style "bsd")
+             (setq c-basic-offset 4)))
 
 (add-hook 'verilog-mode-hook
           '(lambda ()
@@ -57,3 +59,26 @@
              (setq verilog-auto-newline nil)
              (ggtags-mode t))
           t)
+
+(require 'helm-config)
+(helm-mode 1)
+(define-key global-map [remap find-file] 'helm-find-files)
+;; (define-key global-map [remap occur] 'helm-occur)
+(define-key global-map [remap list-buffers] 'helm-buffers-list)
+(define-key global-map [remap dabbrev-expand] 'helm-dabbrev)
+(define-key global-map [remap execute-extended-command] 'helm-M-x)
+(define-key global-map [remap apropos-command] 'helm-apropos)
+(unless (boundp 'completion-in-region-function)
+  (define-key lisp-interaction-mode-map [remap completion-at-point] 'helm-lisp-completion-at-point)
+  (define-key emacs-lisp-mode-map       [remap completion-at-point] 'helm-lisp-completion-at-point))
+
+(setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
+      helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
+      helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
+      helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
+      helm-ff-file-name-history-use-recentf t
+      helm-echo-input-in-header-line t)
+
+(add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
