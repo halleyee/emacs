@@ -1,0 +1,121 @@
+;; Added by Package.el.  This must come before configurations of
+;; installed packages.  Don't delete this line.  If you don't want it,
+;; just comment it out by adding a semicolon to the start of the line.
+;; You may delete these explanatory comments.
+(package-initialize)
+
+(setq package-archives '(("gnu"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
+                         ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
+                         ("marmalade" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/marmalade/")
+			 ("org" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/org/")))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(auto-save-default nil)
+ '(blink-cursor-mode nil)
+ '(emacsql-sqlite3-executable "c:/msys64/mingw64/bin/sqlite3.exe")
+ '(ggtags-executable-directory "c:/msys64/mingw64/bin")
+ '(indent-tabs-mode nil)
+ '(inhibit-startup-buffer-menu t)
+ '(inhibit-startup-echo-area-message "hmsu")
+ '(inhibit-startup-screen t)
+ '(initial-scratch-message nil)
+ '(make-backup-files nil)
+ '(notdeft-directories '("~/org/"))
+ '(org-agenda-files '("~/org/todo.org"))
+ '(package-selected-packages
+   '(counsel xcscope org org-roam org-roam-server hydra lv markdown-mode magit helm ggtags fzf ag))
+ '(require-final-newline t)
+ '(select-active-regions 'only)
+ '(show-paren-mode t))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((t (:family "DejaVu Sans Mono" :foundry "outline" :slant normal :weight normal :height 113 :width normal))))
+ '(region ((t (:background "LightGoldenrod2" :distant-foreground "gtk_selection_fg_color")))))
+(global-set-key "\C-cfa" 'find-file-at-point)
+(global-set-key "\C-ck" 'kill-this-buffer)
+(global-set-key "\C-cl" 'toggle-truncate-lines)
+(global-set-key "\C-cr" 'revert-buffer)
+
+(add-hook 'c++-mode-hook
+          '(lambda ()
+             (ggtags-mode t)
+             (cscope-minor-mode)
+             (hs-minor-mode)
+             (c-set-style "stroustrup")))
+(add-hook 'c-mode-hook
+          '(lambda ()
+             (ggtags-mode t)
+             (cscope-minor-mode)
+             (hs-minor-mode)
+             (c-set-style "bsd")
+	     (c-toggle-comment-style -1)
+             (setq c-basic-offset 4)))
+
+(add-hook 'verilog-mode-hook
+          '(lambda ()
+             (setq verilog-indent-level 4)
+             (setq verilog-indent-level-behavioral 4)
+             (setq verilog-indent-level-declaration 4)
+             (setq verilog-indent-level-directive 4)
+             (setq verilog-indent-level-module 4)
+             (setq verilog-auto-newline nil)
+             (ggtags-mode t))
+          t)
+;; org
+(global-set-key "\C-ca" 'org-agenda)
+(global-set-key "\C-cc" 'org-capture)
+(global-set-key "\C-coc" 'org-roam-capture)
+(global-set-key "\C-cof" 'org-roam-find-file)
+(add-to-list 'exec-path "c:/msys64/mingw64/bin" t)
+(add-to-list 'exec-path "c:/msys64/usr/bin" t)
+;; notdeft
+(add-to-list 'load-path "c:/Users/hmsu/.emacs.d/notdeft" t)
+(add-to-list 'load-path "c:/Users/hmsu/.emacs.d/notdeft/extras" t)
+(require 'notdeft-autoloads)
+(require 'notdeft-global)
+(global-set-key "\C-cn" 'notdeft-global-map)
+(setq notdeft-xapian-program "c:/Users/hmsu/.emacs.d/notdeft/xapian/notdeft-xapian")
+
+(setq ivy-wrap t)
+(counsel-mode)
+(define-key counsel-mode-map [remap switch-to-buffer] 'counsel-switch-buffer)
+(define-key counsel-mode-map [remap list-buffers] 'counsel-ibuffer)
+;; (require 'helm-config)
+;; (helm-mode 1)
+;; (define-key global-map [remap switch-to-buffer] 'helm-mini)
+;; (define-key global-map [remap find-file] 'helm-find-files)
+;; (define-key global-map [remap occur] 'helm-occur)
+;; (define-key global-map [remap list-buffers] 'helm-buffers-list)
+;; (define-key global-map [remap dabbrev-expand] 'helm-dabbrev)
+;; (define-key global-map [remap execute-extended-command] 'helm-M-x)
+;; (define-key global-map [remap apropos-command] 'helm-apropos)
+;; (unless (boundp 'completion-in-region-function)
+;;   (define-key lisp-interaction-mode-map [remap completion-at-point] 'helm-lisp-completion-at-point)
+;;   (define-key emacs-lisp-mode-map       [remap completion-at-point] 'helm-lisp-completion-at-point))
+
+;; (setq ; helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
+;;       helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
+;;       helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
+;;       helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
+;;       helm-ff-file-name-history-use-recentf t
+;;       helm-echo-input-in-header-line t)
+
+(add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+
+(set-face-attribute
+ 'default nil
+ :font (font-spec :name "-outline-DejaVu Sans Mono-normal-normal-normal-mono-15-*-*-*-c-*-iso8859-1"))
+(dolist (charset '(kana han symbol cjk-misc bopomofo))
+  (set-fontset-font
+   (frame-parameter nil 'font)
+   charset
+   (font-spec :name "-outline-SimSun-normal-normal-normal-*-*-*-*-*-p-*-gb2312.1980-0")))
+(setq face-font-rescale-alist '(("SimSun" . 1.25)))
