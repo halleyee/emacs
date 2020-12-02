@@ -23,7 +23,7 @@
  '(make-backup-files nil)
  '(notdeft-directories '("~/org/"))
  '(package-selected-packages
-   '(pyim org org-roam org-roam-server hydra lv rg markdown-mode magit helm ggtags fzf counsel ag))
+   '(org org-roam org-roam-server fzf rg xcscope helm ggtags ag))
  '(require-final-newline t)
  '(show-paren-mode t))
 (custom-set-faces
@@ -31,8 +31,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "DejaVu Sans Mono" :foundry "PfEd" :slant normal :weight normal :height 113 :width normal))))
- '(region ((t (:background "LightGoldenrod2" :distant-foreground "gtk_selection_fg_color")))))
+ '(region ((t (:extend t :background "LightGoldenrod2" :distant-foreground "gtk_selection_fg_color")))))
 (global-set-key "\C-cfa" 'find-file-at-point)
 (global-set-key "\C-ck" 'kill-this-buffer)
 (global-set-key "\C-cl" 'toggle-truncate-lines)
@@ -41,39 +40,34 @@
 (add-hook 'c++-mode-hook
           '(lambda ()
              (ggtags-mode t)
+             (cscope-minor-mode)
              (hs-minor-mode)
              (c-set-style "stroustrup")))
 (add-hook 'c-mode-hook
           '(lambda ()
              (ggtags-mode t)
+             (cscope-minor-mode)
              (hs-minor-mode)
              (c-set-style "bsd")
 	     (c-toggle-comment-style -1)
              (setq c-basic-offset 4)))
-
-(add-hook 'verilog-mode-hook
-          '(lambda ()
-             (setq verilog-indent-level 4)
-             (setq verilog-indent-level-behavioral 4)
-             (setq verilog-indent-level-declaration 4)
-             (setq verilog-indent-level-directive 4)
-             (setq verilog-indent-level-module 4)
-             (setq verilog-auto-newline nil)
-             (ggtags-mode t))
-          t)
 ;; org
 (global-set-key "\C-ca" 'org-agenda)
 (global-set-key "\C-cc" 'org-capture)
 (global-set-key "\C-coc" 'org-roam-capture)
 (global-set-key "\C-cof" 'org-roam-find-file)
-
+(setq org-capture-templates
+      '(("t" "Todo" entry (file "~/org/todo.org")
+         "* TODO %?\n  %i\n  %a")
+        ("j" "Journal" entry (file+olp+datetree "~/org/journal.org")
+         "* %?\nEntered on %U\n  %i\n  %a" :tree-type week)))
 ;; notdeft
-(add-to-list 'load-path "/home/hmsu/notdeft" t)
-(add-to-list 'load-path "/home/hmsu/notdeft/extras" t)
+(add-to-list 'load-path "/home/hmsu/.emacs.d/notdeft" t)
+(add-to-list 'load-path "/home/hmsu/.emacs.d/notdeft/extras" t)
 (require 'notdeft-autoloads)
 (require 'notdeft-global)
 (global-set-key "\C-cn" 'notdeft-global-map)
-(setq notdeft-xapian-program "/home/hmsu/notdeft/xapian/notdeft-xapian")
+(setq notdeft-xapian-program "/home/hmsu/.emacs.d/notdeft/xapian/notdeft-xapian")
 
 (require 'helm-config)
 (helm-mode 1)
@@ -94,15 +88,6 @@
       helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
       helm-ff-file-name-history-use-recentf t
       helm-echo-input-in-header-line t)
-
-(add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
-
-(setq ivy-wrap t)
-(global-set-key "\C-cff" 'counsel-find-file)
-(global-set-key "\C-cfb" 'counsel-switch-buffer)
-(global-set-key "\C-cf\C-b" 'counsel-ibuffer)
 
 (set-face-attribute
  'default nil
